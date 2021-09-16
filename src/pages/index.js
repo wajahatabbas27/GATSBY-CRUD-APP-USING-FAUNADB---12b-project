@@ -1,29 +1,62 @@
-import * as React from "react"
-import { Link } from "gatsby"
-import { StaticImage } from "gatsby-plugin-image"
+import { TextField } from "@material-ui/core";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useState } from "react";
+import Header from "../components/header";
 
-import Layout from "../components/layout"
-import Seo from "../components/seo"
+const Index = () => {
+  const [mydata, setData] = useState("");
+  return (
+    <div style={{ textAlign: "center" }}>
+      <Header />
+      <hr />
+      <br />
+      <br />
+      <Formik
+        initialValues={{ title: "" }}
+        onSubmit={async (values) => {
+          console.log(values);
+          const response = await fetch("/.netlify/functions/fauna-create", {
+            method: "post",
+            body: JSON.stringify(values),
+          });
+          const result = await response.json();
+          setData(result);
+          console.log("Data: " + JSON.stringify(result));
+        }}
+      >
+        {(formik) => (
+          <Form onSubmit={formik.handleSubmit}>
+            <div>
+              <Field
+                type='text'
+                as={TextField}
+                variant='filled'
+                label='Title::'
+                name='title'
+                id='title'
+              />
+              <br />
+              <br />
+              <ErrorMessage
+                name='title'
+                render={(msg) => {
+                  <span style={{ color: "red" }}>{msg}</span>;
+                }}
+              />
+            </div>
+            <div>
+              <button type='submit'>CREATE</button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+      <br />
+      <br />
+      <p>
+        ID OF ABOVE TITLE IS <b>{mydata.id}</b> .
+      </p>
+    </div>
+  );
+};
 
-const IndexPage = () => (
-  <Layout>
-    <Seo title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <StaticImage
-      src="../images/gatsby-astronaut.png"
-      width={300}
-      quality={95}
-      formats={["auto", "webp", "avif"]}
-      alt="A Gatsby astronaut"
-      style={{ marginBottom: `1.45rem` }}
-    />
-    <p>
-      <Link to="/page-2/">Go to page 2</Link> <br />
-      <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-    </p>
-  </Layout>
-)
-
-export default IndexPage
+export default Index;

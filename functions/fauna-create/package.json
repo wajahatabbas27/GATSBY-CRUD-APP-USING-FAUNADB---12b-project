@@ -1,0 +1,15 @@
+{
+  "name": "fauna-create",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fauna-create.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "faunadb": "^4.4.1"
+  }
+}
